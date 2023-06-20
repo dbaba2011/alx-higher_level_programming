@@ -6,19 +6,37 @@ and lists all cities of that state,
 using the database hbtn_0e_4_usa
 """
 
-import MySQLdb
-from sys import argv
-
 if __name__ == "__main__":
-    conn = MySQLdb.connect(host='localhost', port=3306, user=argv[1],
-                           password=argv[2], db=argv[3])
-    cur = conn.cursor()
+    """
+    Access to the database and get the cities
+    from the database.
+    """
+    import MySQLdb
+    from sys import argv
 
-    cur.execute("SELECT cities.name FROM cities JOIN states \
-                ON cities.state_id = states.id \
-                WHERE states.name LIKE %s ORDER BY \
-                cities.id ASC", ('%' + argv[4] + '%',))
-    result = cur.fetchall()
-    print(", ".join(city[0] for city in result))
-    cur.close()
-    conn.close()
+    conn = MySQLdb.connect(
+        host="localhost", port=3306, user=argv[1], passwd=argv[2], db=argv[3]
+    )
+
+    with conn.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT
+                cities.name
+            FROM
+                cities
+            JOIN
+                states
+            ON
+                cities.state_id = states.id
+            WHERE
+                states.name LIKE BINARY %(state_name)s
+            ORDER BY
+                cities.id ASC
+        """,
+            {"state_name": argv[4]},
+        )
+        rows_selected = cursor.fetchall()
+
+    if rows_selected is not None:
+        print(", ".join([row[0] for row in rows_selected]))
