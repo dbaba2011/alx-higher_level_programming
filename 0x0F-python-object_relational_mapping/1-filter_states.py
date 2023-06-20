@@ -1,27 +1,16 @@
 #!/usr/bin/python3
-"""
-This scripts list all the states starting with the N from the database hbtn_0e_0_usa and return them as a tuple.
-"""
+"""Lists all the states with a name starting with N from the hbtn_0e_i_usa"""
+
+import MySQLdb
+from sys import argv
 if __name__ == "__main__":
-    """
-    This connect to the database and execute all queries it designs to perform
-    """
-
-    import MySQLdb
-    from sys import argv
-
-    conn = MySQLdb.connect(
-        host="localhost",
-        user=f"{argv[1]}",
-        password=f"{argv[2]}",
-        db=f"{argv[3]}",
-        port=3306,
-    )
-
+    conn = MySQLdb.connect(host='localhost', port=3306,
+                           password=argv[2], user=argv[1], db=argv[3])
     cur = conn.cursor()
-    cur.execute("SELECT * FROM states Where name LIKE 'N%' ORDER BY states.id ASC")
-    query_rows = cur.fetchall()
-    for row in query_rows:
-        print(row)
+    cur.execute(" select * from states where name LIKE'N%' ORDER BY id ASC;")
+    result = cur.fetchall()
+    for row in result:
+        if row[1][0] == 'N':
+            print(row)
     cur.close()
     conn.close()
