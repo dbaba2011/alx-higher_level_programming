@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 """
-This script update the state where id == 2 
-of the State objects found from 
-the database `hbtn_0e_6_usa`.
+This scripts deletes all the that contains 
+lettera State objectsfound from the 
+database `hbtn_0e_6_usa`.
 """
 
 from model_state import Base, State
@@ -19,8 +19,10 @@ if __name__ == "__main__":
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
     session = Session()
-    
-    result =session.query(State).filter(State.id == 2).first()
-    result.name = "New Mexico"
+
+    result = session.query(State).filter(State.name.contains("a")).all()
+    if result is not None:
+        for state in result:
+            session.delete(state)
     session.commit()
     session.close()

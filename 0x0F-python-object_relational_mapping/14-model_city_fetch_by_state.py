@@ -1,14 +1,15 @@
 #!/usr/bin/python3
 """
-This script update the state where id == 2 
-of the State objects found from 
-the database `hbtn_0e_6_usa`.
+This script join states and city table together
+and display the result State objects
+from the database `hbtn_0e_6_usa`.
 """
 
 from model_state import Base, State
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sys import argv
+from model_city import City
 
 
 if __name__ == "__main__":
@@ -19,8 +20,8 @@ if __name__ == "__main__":
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
     session = Session()
-    
-    result =session.query(State).filter(State.id == 2).first()
-    result.name = "New Mexico"
-    session.commit()
-    session.close()
+
+    all_results = session.query(City, State).join(State)
+
+    for city, state in all_results.all():
+        print(f"{state.name}: {city.id} {city.name}")
