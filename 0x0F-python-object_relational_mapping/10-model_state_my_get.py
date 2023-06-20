@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 """
-This script lists the first State objects
-found from the database `hbtn_0e_6_usa`.
+This script return the id of the first 
+State objects else Not found from the data
+base `hbtn_0e_6_usa`.
 """
 
 from model_state import Base, State
@@ -19,8 +20,9 @@ if __name__ == "__main__":
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    result = session.query(State).order_by(State.id).first()
+    result = session.query(State).filter(State.name == argv[4]).first()
+
     if result is not None:
-        print(f"{result.id}: {result.name}")
+        print(result.id)
     else:
-        print("Nothing")
+        print("Not found")
