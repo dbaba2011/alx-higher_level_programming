@@ -1,21 +1,9 @@
 #!/usr/bin/node
-
 const request = require('request');
 const fs = require('fs');
 
-const url = process.argv[2];
-const filePath = process.argv[3];
-
-request.get(url, (error, response, body) => {
-  if (error) {
-    console.error(error);
-  } else {
-    fs.writeFile(filePath, body, 'utf-8', (writeError) => {
-      if (writeError) {
-        console.error(writeError);
-      } else {
-        console.log(`Webpage content stored in "${filePath}"`);
-      }
-    });
+request(process.argv[2], function (err, response, body) {
+  if (err == null) {
+    fs.writeFileSync(process.argv[3], body);
   }
 });
